@@ -48,6 +48,8 @@
     "import"
   ],
   "rules": {
+    "no-restricted-syntax": "off",
+    "no-await-in-loop": "off",
     "import/extensions": [
       // airbnb eslint config leads the problem
       "error",
