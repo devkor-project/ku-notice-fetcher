@@ -8,3 +8,4 @@ notice fetcher for KUDOG service, not a crawler
 - setting infra
 - refactoring
 - logger
+- set DB
