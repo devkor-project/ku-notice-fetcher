@@ -1,54 +1,114 @@
-import { page } from '@/interfaces/urls';
+import { page, url } from '@/interfaces/urls';
+import { dto } from '@/interfaces/dto';
+import { AnyNode } from 'domhandler';
+
 import { parseDocument, DomUtils } from 'htmlparser2';
 import axios from 'axios';
 
-const app = async (urls: page[]) => {
-  for (const url of urls) {
-    const response = await axios.get(url.urls[0]);
-    const string = response.data as string;
+const dateRegex = /\d{4}\.(0[1-9]|1[012])\.(0[1-9]|[12][0-9]|3[01])/;
 
-    const html = string
-      .replaceAll('\t', '')
-      .replaceAll('\n', '')
-      .replaceAll('  ', '');
-    const dom = parseDocument(html as string);
-    const result = DomUtils.getElements({
-      tag_name: 'tr',
-      tag_contains: 'top-notice-bg ',
-    }, dom, true);
-    const children = DomUtils.getChildren(result[1]);
-    const today = new Date().toISOString().substring(0, 10).replaceAll('-', '.');
-    const posted = DomUtils.innerText(children[4]);
-    // if(today===posted)
-    const contentURL = DomUtils.getChildren(children[1]);
-
-    const nextURL = `${url.urls[0]}${DomUtils.getElementsByTagName('a', contentURL[0])[0].attribs.href}`;
-    const newContent = await axios.get(nextURL);
-    const newHtml = newContent.data as string;
-    const replacedHtml = newHtml.replaceAll('\t', '')
-      .replaceAll('\n', '');
-    const contentDom = parseDocument(replacedHtml as string);
-    const titleNode = DomUtils.getElements({
-      tag_name: 'th',
-    }, contentDom, true);
-    const titleElement = DomUtils.getChildren(titleNode[0].next.next);
-    const title = DomUtils.innerText(titleElement);
-    console.log(title);
-
-    const contentParent = DomUtils.getElements({
-      tag_name: 'div',
-    }, contentDom, true);
-    const spans = DomUtils.getElementsByTagName('span', contentParent[14], true);
-    console.log(DomUtils.textContent(spans));
-
-    console.log(DomUtils.textContent(DomUtils.getChildren(DomUtils.getElements({
-      tag_name: 'td',
-    }, contentDom, true)[2])[1]));
-    console.log(`${url.urls[0]}${DomUtils.getElementsByTagName('a', DomUtils.getChildren(DomUtils.getElements({
-      tag_name: 'td',
-    }, contentDom, true)[2])[1])[0].attribs.href}`);
-    DomUtils.getElementsByTagName('a', contentDom, true);
-  }
+const fetch = async (link: string) => {
+  const response = await axios.get(link);
+  const html = response.data as string;
+  return html;
 };
 
-export default app;
+const isNotice = (element: AnyNode) => {
+  const txt = DomUtils.textContent(element);
+  return dateRegex.test(txt);
+};
+
+const getNoticeInfo = (element: AnyNode): dto => {
+  const anchor = DomUtils.getElementsByTagName('a', element)[0];
+  const link = anchor.attribs.href;
+  const title = DomUtils.innerText(anchor);
+
+  const innerText = DomUtils.innerText(element)
+    .replaceAll('\t', '')
+    .replaceAll('\n', '')
+    .replaceAll('  ', '');
+  const date = innerText.match(dateRegex)[0];
+
+  const substr = innerText.replace('title', '');
+
+  const author = substr.match(/[가-힣]+/)[0];
+
+  return {
+    page: {
+      host: 'tbd',
+      url: link,
+    },
+    writtenDate: date,
+    title,
+    content: 'tbd',
+    writter: author,
+  };
+};
+
+const parseRows = (html: string) => {
+  const dom = parseDocument(html);
+  const elements = DomUtils.getElements({
+    tag_name: (type) => (type === 'tr' || type === 'li'),
+  }, dom, true);
+  const result: dto[] = [];
+  const elementCallback = (element: AnyNode) => {
+    if (isNotice(element)) {
+      const info = getNoticeInfo(element);
+      result.push(info);
+    }
+  };
+  elements.forEach(elementCallback);
+  return result;
+};
+
+const getContent = async (link: url): Promise<string> => {
+  const html = await fetch(link);
+
+  let startidx = html.search('<article>');
+  let endidx = -1;
+  if (startidx === -1) {
+    startidx = html.search('<table>');
+    endidx = html.search('</table>') + '</table>'.length;
+  } else {
+    endidx = html.search('</article>') + '</article>'.length;
+  }
+  const article = html.substring(startidx, endidx);
+  return article;
+};
+
+const app = async (pages: page[]): Promise<dto[]> => {
+  const dtos: dto[] = [];
+  for (const pageInfo of pages) {
+    const html = await fetch(pageInfo.url);
+    const result = parseRows(html);
+    const urlAugmentetResult = result.map((element) => ({
+      page: {
+        host: pageInfo.host,
+        url: pageInfo.url.concat(element.page.url),
+      },
+      writtenDate: element.writtenDate,
+      title: element.title,
+      content: element.content,
+      writter: element.writter,
+    }));
+    const contentAugmentedResult = await Promise.all(urlAugmentetResult.map(async (element) => ({
+      page: {
+        host: pageInfo.host,
+        url: pageInfo.url.concat(element.page.url),
+      },
+      writtenDate: element.writtenDate,
+      title: element.title,
+      content: await getContent(element.page.url),
+      writter: element.writter,
+    })));
+    dtos.push(...contentAugmentedResult);
+  }
+
+  return dtos;
+};
+
+const test = async () => {
+
+};
+
+export default test;
