@@ -27,8 +27,12 @@ const getNoticeInfo = (element: AnyNode): dto => {
     .replaceAll('\t', '')
     .replaceAll('\n', '')
     .replaceAll('  ', '');
-  const date = innerText.match(dateRegex)[0];
-
+  const date = innerText.match(dateRegex)[0].replaceAll('.', '-');
+  const today = new Date().toISOString().substring(0, 10);
+  if (date !== today) {
+    return null;
+    // throw new Error('not today');
+  }
   const substr = innerText.replace(title, '');
 
   const author = substr.match(/[가-힣]+/)[0];
@@ -55,7 +59,7 @@ const parseRows = (html: string) => {
   const elementCallback = (element: AnyNode) => {
     if (isNotice(element)) {
       const info = getNoticeInfo(element);
-      result.push(info);
+      if (info !== null) result.push(info);
     }
   };
   elements.forEach(elementCallback);

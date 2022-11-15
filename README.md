@@ -1,11 +1,9 @@
 # ku-notice-fetcher
 
-notice fetcher for KUDOG service, not a crawler
+notice fetcher for KUDOG service
 
 ## TODO
 
-- 성능 upup
-- setting infra
-- refactoring
 - logger
-- set DB
+- 새 사이트 추가
+- test
