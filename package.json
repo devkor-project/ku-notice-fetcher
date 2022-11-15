@@ -5,8 +5,10 @@
   "author": " ",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node -r tsconfig-paths/register ./src ./src/index.ts",
-    "node": "ts-node -r tsconfig-paths/register ./src"
+    "tsnode": "ts-node -r tsconfig-paths/register ./src ./src/index.ts",
+    "prebuild": "rm -rf dist",
+    "build": "tsc -p . && tsc-alias -p tsconfig.json",
+    "start": "node ./dist/src/index.js"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -19,6 +21,7 @@
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
+    "@types/domhandler": "^2.4.2",
     "@types/dotenv": "^8.2.0",
     "@types/htmlparser2": "^3.10.3",
     "@types/mysql": "^2.15.21",
