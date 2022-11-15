@@ -5,5 +5,5 @@ export interface dto {
   writtenDate: string;
   title: string;
   content: string;
-  writter: string;
+  writer: string;
 }

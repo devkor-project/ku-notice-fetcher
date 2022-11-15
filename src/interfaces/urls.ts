@@ -1,5 +1,6 @@
 export type url = string;
 export interface page {
-  host: string;
+  provider: string;
+  categoryId: number;
   url: url;
 }

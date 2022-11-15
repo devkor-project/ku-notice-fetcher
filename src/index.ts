@@ -1,6 +1,16 @@
-import app from '@/app/app';
-import urls from './consts/urls';
+import fetcherApp from '@/app/index';
+import axios from 'axios';
 
-app(urls)
-  .then()
-  .catch((err) => console.error(err));
+const app = async () => {
+  // TODO:: logger
+  try {
+    await fetcherApp();
+  } catch (err) {
+    console.log(err);
+  }
+};
+app().then(() => {
+  console.log('done');
+}).catch((err) => {
+  console.log(err);
+});

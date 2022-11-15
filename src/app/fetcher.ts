@@ -21,7 +21,7 @@ const isNotice = (element: AnyNode) => {
 const getNoticeInfo = (element: AnyNode): dto => {
   const anchor = DomUtils.getElementsByTagName('a', element)[0];
   const link = anchor.attribs.href;
-  const title = DomUtils.innerText(anchor);
+  const title = DomUtils.innerText(anchor).trim();
 
   const innerText = DomUtils.innerText(element)
     .replaceAll('\t', '')
@@ -29,19 +29,20 @@ const getNoticeInfo = (element: AnyNode): dto => {
     .replaceAll('  ', '');
   const date = innerText.match(dateRegex)[0];
 
-  const substr = innerText.replace('title', '');
+  const substr = innerText.replace(title, '');
 
   const author = substr.match(/[가-힣]+/)[0];
 
   return {
     page: {
-      host: 'tbd',
+      provider: 'tbd',
+      categoryId: -1,
       url: link,
     },
     writtenDate: date,
     title,
     content: 'tbd',
-    writter: author,
+    writer: author,
   };
 };
 
@@ -61,45 +62,41 @@ const parseRows = (html: string) => {
   return result;
 };
 
+const getLink = (anchor: url, infoLink: url): string => {
+  if (anchor.startsWith('http')) return anchor;
+  return infoLink.concat(anchor);
+};
+
 const getContent = async (link: url): Promise<string> => {
   const html = await fetch(link);
-
-  let startidx = html.search('<article>');
+  let startidx = html.lastIndexOf('<article');
   let endidx = -1;
   if (startidx === -1) {
-    startidx = html.search('<table>');
-    endidx = html.search('</table>') + '</table>'.length;
+    startidx = html.lastIndexOf('<table');
+    endidx = html.lastIndexOf('</table>') + '</table>'.length;
   } else {
-    endidx = html.search('</article>') + '</article>'.length;
+    endidx = html.lastIndexOf('</article>') + '</article>'.length;
   }
   const article = html.substring(startidx, endidx);
   return article;
 };
 
-const app = async (pages: page[]): Promise<dto[]> => {
+const noticeFetcher = async (pages: page[]): Promise<dto[]> => {
   const dtos: dto[] = [];
   for (const pageInfo of pages) {
     const html = await fetch(pageInfo.url);
     const result = parseRows(html);
-    const urlAugmentetResult = result.map((element) => ({
+
+    const contentAugmentedResult = await Promise.all(result.map(async (element) => ({
       page: {
-        host: pageInfo.host,
-        url: pageInfo.url.concat(element.page.url),
+        provider: pageInfo.provider,
+        categoryId: pageInfo.categoryId,
+        url: getLink(element.page.url, pageInfo.url),
       },
       writtenDate: element.writtenDate,
       title: element.title,
-      content: element.content,
-      writter: element.writter,
-    }));
-    const contentAugmentedResult = await Promise.all(urlAugmentetResult.map(async (element) => ({
-      page: {
-        host: pageInfo.host,
-        url: pageInfo.url.concat(element.page.url),
-      },
-      writtenDate: element.writtenDate,
-      title: element.title,
-      content: await getContent(element.page.url),
-      writter: element.writter,
+      content: await getContent(getLink(element.page.url, pageInfo.url)),
+      writer: element.writer,
     })));
     dtos.push(...contentAugmentedResult);
   }
@@ -107,8 +104,4 @@ const app = async (pages: page[]): Promise<dto[]> => {
   return dtos;
 };
 
-const test = async () => {
-
-};
-
-export default test;
+export default noticeFetcher;
