@@ -56,10 +56,17 @@ const parseRows = (html: string) => {
     tag_name: (type) => (type === 'tr' || type === 'li'),
   }, dom, true);
   const result: dto[] = [];
+  const articleNos = [];
   const elementCallback = (element: AnyNode) => {
     if (isNotice(element)) {
       const info = getNoticeInfo(element);
-      if (info !== null) result.push(info);
+      if (info === null) return;
+      const articleNoStarts = info.page.url.indexOf('articleNo=') + 'articleNo='.length;
+      const articleNoEnds = info.page.url.indexOf('&', articleNoStarts);
+      const articleNo = info.page.url.substring(articleNoStarts, articleNoEnds);
+      if (articleNos.includes(articleNo)) return;
+      articleNos.push(articleNo);
+      result.push(info);
     }
   };
   elements.forEach(elementCallback);
@@ -82,6 +89,16 @@ const getContent = async (link: url): Promise<string> => {
     endidx = html.lastIndexOf('</article>') + '</article>'.length;
   }
   const article = html.substring(startidx, endidx);
+
+  const imgStart = article.indexOf('<img src="');
+
+  if (imgStart !== -1) {
+    const imgEnd = article.substring(imgStart + 10).indexOf('"');
+    const imgSrc = article.substring(imgStart + 10, imgStart + 10 + imgEnd);
+    const domain = link.substring(0, link.replace('//', '11').indexOf('/'));
+    const src = getLink(imgSrc, domain);
+    return article.replace(imgSrc, src);
+  }
   return article;
 };
 
