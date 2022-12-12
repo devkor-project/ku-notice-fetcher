@@ -4,7 +4,7 @@ import mysql from 'mysql';
 dotenv.config();
 
 const pool = mysql.createPool({
-  connectionLimit: 1000,
+  connectionLimit: 5000,
   connectTimeout: 60 * 60 * 1000,
   acquireTimeout: 60 * 60 * 1000,
   timeout: 60 * 60 * 1000,

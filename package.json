@@ -9,7 +9,7 @@
     "prebuild": "rm -rf dist",
     "build": "tsc -p . && tsc-alias -p tsconfig.json",
     "start": "cross-env NODE_ENV=production node dist/src/index.js",
-    "dev": "npx pm2 start ts-node -- -P ./tsconfig.json ./src/index.ts --watch"
+    "dev": "npx pm2 start ts-node -- -P ./tsconfig.json -r tsconfig-paths/register ./src ./src/index.ts --watch"
   },
   "dependencies": {
     "axios": "^0.27.2",

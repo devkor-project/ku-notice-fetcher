@@ -14,6 +14,7 @@ const store = async (dataArr: dto[]) => {
       data.page.categoryId,
     ];
     await query(sql, args);
+    console.log(`stored: ${data.title}`);
   }));
 };
 

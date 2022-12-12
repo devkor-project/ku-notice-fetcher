@@ -35,6 +35,220 @@ const urls: page[] = [
     categoryId: 7,
     url: 'http://chem.korea.ac.kr/news01',
   },
+  {
+    provider: '공과대학',
+    categoryId: 10,
+    url: 'https://eng.korea.ac.kr/eng/community/notice.do',
+  },
+  {
+    provider: '공과대학',
+    categoryId: 13,
+    url: 'https://eng.korea.ac.kr/eng/community/webzine.do',
+  },
+  {
+    provider: '공과대학',
+    categoryId: 14,
+    url: 'https://eng.korea.ac.kr/eng/community/review.do',
+  },
+  {
+    provider: '공과대학',
+    categoryId: 15,
+    url: 'https://eng.korea.ac.kr/eng/community/questions.do',
+  },
+
+  {
+    provider: '경영대학',
+    categoryId: 16,
+    url: 'https://biz.korea.ac.kr/news/notice.html?kind=10',
+  },
+  {
+    provider: '경영대학',
+    categoryId: 17,
+    url: 'https://biz.korea.ac.kr/news/academic.html',
+  },
+
+  {
+    provider: '의과대학',
+    categoryId: 18,
+    url: 'http://medicine.korea.ac.kr/web/www/-111',
+
+  },
+
+  {
+    provider: '의과대학',
+    categoryId: 19,
+    url: 'http://medicine.korea.ac.kr/web/www/-112',
+  },
+  {
+    provider: '국제대학',
+    categoryId: 21,
+    url: 'https://int.korea.edu/kuis/community/notice_dis.do',
+  },
+
+  {
+    provider: '국제대학',
+    categoryId: 22,
+    url: 'https://int.korea.edu/kuis/community/notice_gsis.do',
+  },
+
+  {
+    provider: '국제대학',
+    categoryId: 23,
+    url: 'https://int.korea.edu/kuis/community/news.do',
+  },
+  {
+    provider: '국제대학',
+    categoryId: 24,
+    url: 'https://int.korea.edu/kuis/community/faculty_news.do',
+  },
+
+  {
+    provider: '국제대학',
+    categoryId: 25,
+    url: 'https://int.korea.edu/kuis/community/optn_job.do',
+  },
+  {
+    provider: '국제대학',
+    categoryId: 26,
+    url: 'https://int.korea.edu/kuis/community/optn_other.do',
+  },
+  {
+    provider: '문과대학',
+    categoryId: 27,
+    url: 'https://libart.korea.ac.kr/libart/notice/notice.do',
+  },
+  {
+    provider: '문과대학',
+    categoryId: 28,
+    url: 'https://libart.korea.ac.kr/libart/notice/business.do',
+  },
+
+  {
+    provider: '사범대학',
+    categoryId: 29,
+    url: 'https://kuedu.korea.ac.kr/educa/notice/notice01.do',
+  },
+  {
+    provider: '사범대학',
+    categoryId: 30,
+    url: 'https://kuedu.korea.ac.kr/educa/notice/notice02.do',
+  },
+  {
+    provider: '사범대학',
+    categoryId: 31,
+    url: 'https://kuedu.korea.ac.kr/educa/notice/hire.do',
+  },
+  {
+    provider: '미디어학부',
+    categoryId: 32,
+    url: 'https://mediacom.korea.ac.kr/mediacom/faculty/notice.do',
+  },
+  {
+    provider: '미디어학부',
+    categoryId: 33,
+    url: 'https://mediacom.korea.ac.kr/mediacom/about/notice2.do',
+  },
+  {
+    provider: '생명과학대학',
+    categoryId: 34,
+    url: 'https://lifesci.korea.ac.kr/lifesci/reference/notice.do',
+  },
+  {
+    provider: '생명과학대학',
+    categoryId: 35,
+    url: 'https://lifesci.korea.ac.kr/lifesci/reference/news.do',
+  },
+  {
+    provider: '생명과학대학',
+    categoryId: 36,
+    url: 'https://lifesci.korea.ac.kr/lifesci/reference/hire.do',
+  },
+  {
+    provider: '생명과학대학',
+    categoryId: 37,
+    url: 'https://lifesci.korea.ac.kr/lifesci/reference/collusion.do',
+  },
+  {
+    provider: '생명과학대학',
+    categoryId: 38,
+    url: 'https://lifesci.korea.ac.kr/lifesci/reference/seminar.do',
+  },
+  {
+    provider: '간호대학',
+    categoryId: 39,
+    url: 'https://nursing.korea.ac.kr/nursing/community/notice.do',
+  },
+  {
+    provider: '간호대학',
+    categoryId: 40,
+    url: 'https://nursing.korea.ac.kr/nursing/community/notice_under.do',
+  },
+  {
+    provider: '간호대학',
+    categoryId: 41,
+    url: 'https://nursing.korea.ac.kr/nursing/community/notice_grad.do',
+  },
+  {
+    provider: '간호대학',
+    categoryId: 42,
+    url: 'https://nursing.korea.ac.kr/nursing/community/job_info.do',
+  },
+  {
+    provider: '자유전공학부',
+    categoryId: 43,
+    url: 'https://sis.korea.ac.kr/sis/join/notice.do',
+  },
+  {
+    provider: '정경대학',
+    categoryId: 44,
+    url: 'https://hoan.korea.ac.kr/hoan/commu/notice.do',
+  },
+
+  {
+    provider: '보건과학대학',
+    categoryId: 45,
+    url: 'https://chs.korea.ac.kr/chs/notice/notice.do',
+  },
+  {
+    provider: '보건과학대학',
+    categoryId: 46,
+    url: 'https://chs.korea.ac.kr/chs/notice/notice2.do',
+  },
+  {
+    provider: '보건과학대학',
+    categoryId: 47,
+    url: 'https://chs.korea.ac.kr/chs/notice/photogallery.do',
+  },
+  {
+    provider: '보건과학대학',
+    categoryId: 48,
+    url: 'https://chs.korea.ac.kr/chs/for_students/infor05.do',
+  },
+  {
+    provider: '스마트보안학부',
+    categoryId: 49,
+    url: 'https://gss.korea.ac.kr/ime/board/smart_notice.do',
+  },
+  {
+    provider: '이과대학',
+    categoryId: 50,
+    url: 'https://science.korea.ac.kr/science/board/science/news_re.do',
+  },
+  {
+    provider: '이과대학',
+    categoryId: 51,
+    url: 'https://science.korea.ac.kr/science/board/department/notice_re.do',
+  },
+  {
+    provider: '이과대학',
+    categoryId: 52,
+    url: 'https://science.korea.ac.kr/science/board/graduate/notice_re.do',
+  },
+  {
+    provider: '심리학부',
+    categoryId: 53,
+    url: 'https://psy.korea.ac.kr/NewsNEvent/Notice',
+  },
 ];
 
 export default urls;
