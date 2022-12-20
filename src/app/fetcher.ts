@@ -15,10 +15,10 @@ const fetch = async (link: string) => {
 
 const isNotice = (element: AnyNode) => {
   const txt = DomUtils.textContent(element);
-  return dateRegex.test(txt);
+  return dateRegex.test(txt.replaceAll('-', '.'));
 };
 
-const getNoticeInfo = (element: AnyNode, provider: string): dto => {
+const getNoticeInfo = (element: AnyNode, provider: string, categoryId: number): dto => {
   if (provider === '경영대학') {
     const tit = DomUtils.getElements({
       class: (type) => (type === 'tit'),
@@ -45,6 +45,34 @@ const getNoticeInfo = (element: AnyNode, provider: string): dto => {
       title,
       content: 'tbd',
       writer: '경영대학',
+    };
+  }
+  if (provider === '전기전자공학부') {
+    const tit = DomUtils.getElements({
+      class: (type) => (type === 'tit'),
+    }, element, true);
+    const title = DomUtils.innerText(tit).trim();
+    const innerText = DomUtils.innerText(element)
+      .replaceAll('\t', '')
+      .replaceAll('\n', '')
+      .replaceAll('  ', '');
+    const date = innerText.match(dateRegex)[0].replaceAll('.', '-');
+    const anchor = DomUtils.getElementsByTagName('a', element)[0];
+    const link = anchor.attribs.href;
+    const today = new Date().toISOString().substring(0, 10);
+    if (date !== today) {
+      return null;
+    }
+    return {
+      page: {
+        provider: '전기전자공학부',
+        categoryId: -1,
+        url: `https://ee.korea.ac.kr/community/${link}`,
+      },
+      writtenDate: date,
+      title,
+      content: 'tbd',
+      writer: '전기전자공학부',
     };
   }
 
@@ -77,15 +105,16 @@ const getNoticeInfo = (element: AnyNode, provider: string): dto => {
       writer: '심리학부',
     };
   }
-
-  const anchor = DomUtils.getElementsByTagName('a', element)[0];
+  let anchoridx = 0;
+  if (categoryId === 58) anchoridx = 1;
+  const anchor = DomUtils.getElementsByTagName('a', element)[anchoridx];
   const link = anchor.attribs.href;
   const title = DomUtils.innerText(anchor).trim();
   const innerText = DomUtils.innerText(element)
     .replaceAll('\t', '')
     .replaceAll('\n', '')
     .replaceAll('  ', '');
-  const date = innerText.match(dateRegex)[0].replaceAll('.', '-');
+  const date = innerText.replaceAll('-', '.').match(dateRegex)[0].replaceAll('.', '-');
   const today = new Date().toISOString().substring(0, 10);
   if (date !== today) {
     return null;
@@ -93,6 +122,7 @@ const getNoticeInfo = (element: AnyNode, provider: string): dto => {
   const substr = innerText.replace(title, '').replace('News', '').replace('Events', '');
   let author = '';
   if (provider === '의과대학') author = '의과대학';
+  else if (provider === '건축사회환경공학과') author = '건축사회환경공학과';
   // eslint-disable-next-line prefer-destructuring
   else author = substr.match(/[가-힣a-zA-Z]+/)[0];
   return {
@@ -108,12 +138,18 @@ const getNoticeInfo = (element: AnyNode, provider: string): dto => {
   };
 };
 
-const parseRows = (html: string, provider: string) => {
+const parseRows = (html: string, provider: string, categoryId: number) => {
   const dom = parseDocument(html);
   let elements = DomUtils.getElements({
     tag_name: (type) => (type === 'tr' || type === 'li'),
   }, dom, true);
   if (provider === '경영대학') {
+    // get elements which is class=notice
+    elements = DomUtils.getElements({
+      class: (type) => (type === 'cont'),
+    }, dom, true);
+  }
+  if (provider === '전기전자공학부') {
     // get elements which is class=notice
     elements = DomUtils.getElements({
       class: (type) => (type === 'cont'),
@@ -128,7 +164,7 @@ const parseRows = (html: string, provider: string) => {
     const articleNos = [];
     const elementCallback = (element: AnyNode) => {
       if (isNotice(element)) {
-        const info = getNoticeInfo(element, provider);
+        const info = getNoticeInfo(element, provider, categoryId);
         if (info === null) return;
         if (articleNos.includes(info.page.url)) return;
         articleNos.push(info.page.url);
@@ -142,14 +178,14 @@ const parseRows = (html: string, provider: string) => {
   const articleNos = [];
   const elementCallback = (element: AnyNode) => {
     if (isNotice(element)) {
-      const info = getNoticeInfo(element, provider);
+      const info = getNoticeInfo(element, provider, categoryId);
       if (info === null) return;
       let articleNoStarts = info.page.url.indexOf('articleNo=') + 'articleNo='.length;
       if (articleNoStarts === -1) articleNoStarts = info.page.url.indexOf('articleId=') + 'articleId='.length;
       if (articleNoStarts === -1) articleNoStarts = info.page.url.indexOf('no=') + 'no='.length;
       const articleNoEnds = info.page.url.indexOf('&', articleNoStarts);
       const articleNo = info.page.url.substring(articleNoStarts, articleNoEnds);
-      if (articleNos.includes(articleNo) && provider !== '의과대학') return;
+      if (articleNos.includes(articleNo) && provider !== '의과대학' && provider !== '화학과' && provider !== '화공생명공학과' && provider !== '건축사회환경공학과') return;
       articleNos.push(articleNo);
       result.push(info);
     }
@@ -176,6 +212,22 @@ const getContent = async (link: url): Promise<string> => {
       const imgEnd = content.substring(imgStart + 17).indexOf('"');
       const imgSrc = content.substring(imgStart + 17, imgStart + 17 + imgEnd);
       content = content.replace(imgSrc, 'https://biz.korea.ac.kr'.concat(imgSrc));
+    }
+
+    return `<div>${content}</div>`;
+  }
+  if (link.includes('ee')) {
+    const html = await fetch(link);
+    const start = html.indexOf('<div class="title_info">');
+    const end = html.indexOf('<div class="list_info">');
+    let content = html.substring(start, end);
+
+    const imgStart = content.indexOf('<img alt="" src="');
+
+    if (imgStart !== -1) {
+      const imgEnd = content.substring(imgStart + 17).indexOf('"');
+      const imgSrc = content.substring(imgStart + 17, imgStart + 17 + imgEnd);
+      content = content.replace(imgSrc, 'https://ee.korea.ac.kr'.concat(imgSrc));
     }
 
     return `<div>${content}</div>`;
@@ -221,7 +273,7 @@ const noticeFetcher = async (pages: page[]): Promise<dto[]> => {
   const dtos: dto[] = [];
   for (const pageInfo of pages) {
     const html = await fetch(pageInfo.url);
-    const result = parseRows(html, pageInfo.provider);
+    const result = parseRows(html, pageInfo.provider, pageInfo.categoryId);
     const contentAugmentedResult = await Promise.all(result.map(async (element) => {
       if (pageInfo.provider === '보건과학대학' && (element.page.url.includes('exin') || element.page.url.includes('healthsci'))) return;
       console.log(`fetched: ${element.title} from ${pageInfo.provider}`);
