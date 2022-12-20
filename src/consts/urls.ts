@@ -1,6 +1,7 @@
 import { page } from '@/interfaces/urls';
 
 const urls: page[] = [
+
   {
     provider: '정보대학',
     categoryId: 1,
@@ -34,6 +35,11 @@ const urls: page[] = [
     provider: '화학과',
     categoryId: 7,
     url: 'http://chem.korea.ac.kr/news01',
+  },
+  {
+    provider: '화학과',
+    categoryId: 55,
+    url: 'http://chem.korea.ac.kr/news04',
   },
   {
     provider: '공과대학',
@@ -248,6 +254,46 @@ const urls: page[] = [
     provider: '심리학부',
     categoryId: 53,
     url: 'https://psy.korea.ac.kr/NewsNEvent/Notice',
+  },
+  {
+    provider: '화공생명공학과',
+    categoryId: 56,
+    url: 'https://cbe.korea.ac.kr/wp/%ec%84%b8%eb%af%b8%eb%82%98-%ec%95%88%eb%82%b4/%ec%b7%a8%ec%97%85%ec%a0%95%eb%b3%b4/',
+  },
+  {
+    provider: '화공생명공학과',
+    categoryId: 57,
+    url: 'https://cbe.korea.ac.kr/wp/notice/',
+  },
+  {
+    provider: '건축사회환경공학과',
+    categoryId: 58,
+    url: 'https://ace.korea.ac.kr/bbs/board.php?bo_table=sub5_2',
+  },
+  {
+    provider: '건축사회환경공학과',
+    categoryId: 59,
+    url: 'https://ace.korea.ac.kr/bbs/board.php?bo_table=sub5_5',
+  },
+  {
+    provider: '기계공학과',
+    categoryId: 60,
+    url: 'https://me.korea.ac.kr/me/news/notice.do',
+  },
+  {
+    provider: '기계공학과',
+    categoryId: 61,
+    url: 'https://me.korea.ac.kr/me/news/job.do',
+  },
+  {
+    provider: '전기전자공학부',
+    categoryId: 62,
+    url: 'https://ee.korea.ac.kr/community/undernotice.html',
+  },
+  {
+    provider: '전기전자공학부',
+    categoryId: 63,
+    url: 'https://ee.korea.ac.kr/community/job.html',
   },
 ];
 
