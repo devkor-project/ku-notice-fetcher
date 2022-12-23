@@ -12,6 +12,6 @@ const app = async () => {
 };
 
 const rule = new schedule.RecurrenceRule();
-rule.hour = 18;
+rule.hour = 8;
 rule.minute = 0;
 schedule.scheduleJob(rule, app);
