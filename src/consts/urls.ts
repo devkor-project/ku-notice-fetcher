@@ -1,7 +1,6 @@
 import { page } from '@/interfaces/urls';
 
 const urls: page[] = [
-
   {
     provider: '정보대학',
     categoryId: 1,
@@ -15,7 +14,7 @@ const urls: page[] = [
   {
     provider: '정보대학',
     categoryId: 3,
-    url: 'https://info.korea.ac.kr/info/board/course.do',
+    url: 'https://info.korea.ac.kr/info/board/course_job.do',
   },
   {
     provider: '디자인조형학부',
