@@ -16,11 +16,16 @@ const pool = mysql.createPool({
 });
 
 const query = (sql: string, args: any[]): Promise<any> => new Promise((resolve, reject) => {
-  pool.query(sql, args, (err, rows) => {
-    if (err) {
-      return reject(err);
-    }
-    return resolve(rows);
+  pool.getConnection((err, con) => {
+    if (err) return reject(err);
+
+    con.query(sql, args, (error, rows) => {
+      if (error) {
+        return reject(error);
+      }
+      con.release();
+      return resolve(rows);
+    });
   });
 });
 
