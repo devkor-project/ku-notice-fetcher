@@ -269,30 +269,29 @@ const getContent = async (link: url): Promise<string> => {
   return article;
 };
 
-const noticeFetcher = async (pages: page[]): Promise<dto[]> => {
+const noticeFetcher = async (pageInfo: page): Promise<dto> => {
   const dtos: dto[] = [];
-  for (const pageInfo of pages) {
-    const html = await fetch(pageInfo.url);
-    const result = parseRows(html, pageInfo.provider, pageInfo.categoryId);
-    const contentAugmentedResult = await Promise.all(result.map(async (element) => {
-      if (pageInfo.provider === '보건과학대학' && (element.page.url.includes('exin') || element.page.url.includes('healthsci'))) return;
-      console.log(`fetched: ${element.title} from ${pageInfo.provider}`);
-      return {
-        page: {
-          provider: pageInfo.provider,
-          categoryId: pageInfo.categoryId,
-          url: getLink(element.page.url, pageInfo.url),
-        },
-        writtenDate: element.writtenDate,
-        title: element.title,
-        content: await getContent(getLink(element.page.url, pageInfo.url)),
-        writer: element.writer,
-      };
-    }));
-    dtos.push(...contentAugmentedResult);
-  }
 
-  return dtos;
+  const html = await fetch(pageInfo.url);
+  const result = parseRows(html, pageInfo.provider, pageInfo.categoryId);
+  const contentAugmentedResult = await Promise.all(result.map(async (element) => {
+    if (pageInfo.provider === '보건과학대학' && (element.page.url.includes('exin') || element.page.url.includes('healthsci'))) return;
+    console.log(`fetched: ${element.title} from ${pageInfo.provider}`);
+    return {
+      page: {
+        provider: pageInfo.provider,
+        categoryId: pageInfo.categoryId,
+        url: getLink(element.page.url, pageInfo.url),
+      },
+      writtenDate: element.writtenDate,
+      title: element.title,
+      content: await getContent(getLink(element.page.url, pageInfo.url)),
+      writer: element.writer,
+    };
+  }));
+  dtos.push(...contentAugmentedResult);
+
+  return dtos[0];
 };
 
 export default noticeFetcher;
