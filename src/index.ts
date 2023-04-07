@@ -17,8 +17,10 @@ expressApp.get('/', (req, res) => {
   res.send('crawler is avaliable');
 });
 expressApp.listen(3000, () => {
+  console.log('schedule start');
   const rule = new schedule.RecurrenceRule();
-  rule.hour = 8;
+  rule.hour = 17;
   rule.minute = 0;
+  rule.tz = 'Asia/Seoul';
   schedule.scheduleJob(rule, app);
 });
