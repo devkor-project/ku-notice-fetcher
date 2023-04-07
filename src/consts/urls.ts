@@ -294,6 +294,16 @@ const urls: page[] = [
     categoryId: 63,
     url: 'https://ee.korea.ac.kr/community/job.html',
   },
+  {
+    provider: '가정교육과',
+    categoryId: 64,
+    url: 'https://homedu.korea.ac.kr/homedu/board/notice.do',
+  },
+  {
+    provider: '생활과학과(대학원)',
+    categoryId: 65,
+    url: 'https://homedu.korea.ac.kr/homedu/research/project.do',
+  },
 ];
 
 export default urls;

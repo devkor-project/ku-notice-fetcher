@@ -7,8 +7,11 @@ const app = async () => {
   console.log(`app: ${today}`);
   await Promise.all(urls.map(async (url) => {
     const data = await noticeFetcher(url);
-    console.log('fetch complete!');
-    await store(data);
+    console.log(`${url.provider} : ${url.categoryId} - fetch complete!`);
+    await Promise.all(data.map(async (d) => {
+      await store(d);
+    }));
+
     console.log('store complete!');
   }));
 };

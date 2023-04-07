@@ -269,7 +269,7 @@ const getContent = async (link: url): Promise<string> => {
   return article;
 };
 
-const noticeFetcher = async (pageInfo: page): Promise<dto> => {
+const noticeFetcher = async (pageInfo: page): Promise<dto[]> => {
   const dtos: dto[] = [];
 
   const html = await fetch(pageInfo.url);
@@ -291,7 +291,7 @@ const noticeFetcher = async (pageInfo: page): Promise<dto> => {
   }));
   dtos.push(...contentAugmentedResult);
 
-  return dtos[0];
+  return dtos;
 };
 
 export default noticeFetcher;
